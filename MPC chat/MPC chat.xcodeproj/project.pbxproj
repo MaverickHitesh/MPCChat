@@ -18,6 +18,8 @@
 		728519122C297F63000A9850 /* MPC_chatUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728519112C297F63000A9850 /* MPC_chatUITestsLaunchTests.swift */; };
 		7285191F2C2981C6000A9850 /* MPCManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7285191E2C2981C6000A9850 /* MPCManager.swift */; };
 		728519212C2981FA000A9850 /* ChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728519202C2981FA000A9850 /* ChatViewModel.swift */; };
+		728519242C2BBE77000A9850 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728519232C2BBE77000A9850 /* ChatView.swift */; };
+		728519262C2BBEA1000A9850 /* DeviceListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728519252C2BBEA1000A9850 /* DeviceListView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +54,8 @@
 		728519112C297F63000A9850 /* MPC_chatUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPC_chatUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		7285191E2C2981C6000A9850 /* MPCManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPCManager.swift; sourceTree = "<group>"; };
 		728519202C2981FA000A9850 /* ChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModel.swift; sourceTree = "<group>"; };
+		728519232C2BBE77000A9850 /* ChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
+		728519252C2BBEA1000A9850 /* DeviceListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +110,8 @@
 				728518F12C297F61000A9850 /* ContentView.swift */,
 				7285191E2C2981C6000A9850 /* MPCManager.swift */,
 				728519202C2981FA000A9850 /* ChatViewModel.swift */,
+				728519232C2BBE77000A9850 /* ChatView.swift */,
+				728519252C2BBEA1000A9850 /* DeviceListView.swift */,
 				728518F32C297F63000A9850 /* Assets.xcassets */,
 				728518F82C297F63000A9850 /* Persistence.swift */,
 				728518FA2C297F63000A9850 /* MPC_chat.xcdatamodeld */,
@@ -273,7 +279,9 @@
 				728518F92C297F63000A9850 /* Persistence.swift in Sources */,
 				7285191F2C2981C6000A9850 /* MPCManager.swift in Sources */,
 				728518F22C297F61000A9850 /* ContentView.swift in Sources */,
+				728519242C2BBE77000A9850 /* ChatView.swift in Sources */,
 				728519212C2981FA000A9850 /* ChatViewModel.swift in Sources */,
+				728519262C2BBEA1000A9850 /* DeviceListView.swift in Sources */,
 				728518F02C297F61000A9850 /* MPC_chatApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

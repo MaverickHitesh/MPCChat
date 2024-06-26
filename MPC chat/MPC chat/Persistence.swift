@@ -24,3 +24,9 @@ struct PersistenceController {
         }
     }
 }
+
+extension NSManagedObjectContext {
+    static var current: NSManagedObjectContext {
+        return PersistenceController.shared.container.viewContext
+    }
+}

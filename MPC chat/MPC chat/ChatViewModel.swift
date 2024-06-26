@@ -6,62 +6,49 @@
 //
 
 import Foundation
-import Combine
+import SwiftUI
 import CoreData
+import MultipeerConnectivity
 
 class ChatViewModel: ObservableObject {
     static let shared = ChatViewModel()
 
     @Published var messages: [Message] = []
-    @Published var messageText: String = ""
 
-//    private var cancellables = Set<AnyCancellable>()
-    private let context = PersistenceController.shared.container.viewContext
-
-    init() {
-        loadMessages()
+    func sendMessage(_ message: String, peer: MCPeerID? = nil) {
+        MPCManager.shared.send(message: message, peer: peer)
+        saveMessage(content: message, isSentByCurrentUser: true)
     }
 
-    func sendMessage() {
-        let message = messageText
-        if let data = message.data(using: .utf8) {
-            do {
-                try MPCManager.shared.session.send(data, toPeers: MPCManager.shared.session.connectedPeers, with: .reliable)
-            } catch {
-                print("Error: Unable to send message")
-            }
-            saveMessage(content: message, sender: "Me")
-            messageText = ""
-        }
+    func receiveMessage(_ message: String, from peer: String) {
+        saveMessage(content: message, isSentByCurrentUser: false, sender: peer)
     }
 
-    func receiveMessage(_ message: String, from sender: String) {
-        saveMessage(content: message, sender: sender)
-    }
-
-    private func saveMessage(content: String, sender: String) {
+    private func saveMessage(content: String, isSentByCurrentUser: Bool, sender: String = UIDevice.current.name) {
+        let context = NSManagedObjectContext.current
         let newMessage = Message(context: context)
         newMessage.content = content
-        newMessage.timestamp = Date()
+        newMessage.isSentByCurrentUser = isSentByCurrentUser
         newMessage.sender = sender
+        newMessage.timestamp = Date()
 
         do {
             try context.save()
-            loadMessages()
+            messages.append(newMessage)
         } catch {
             print("Failed to save message: \(error.localizedDescription)")
         }
     }
 
-    private func loadMessages() {
+    func fetchMessages() {
+        let context = NSManagedObjectContext.current
         let request: NSFetchRequest<Message> = Message.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
-        print(Thread.isMainThread)
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Message.timestamp, ascending: true)]
+        
         do {
             messages = try context.fetch(request)
         } catch {
-            print("Failed to load messages: \(error.localizedDescription)")
+            print("Failed to fetch messages: \(error.localizedDescription)")
         }
     }
 }
-
