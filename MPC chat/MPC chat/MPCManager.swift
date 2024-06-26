@@ -31,7 +31,11 @@ class MPCManager: NSObject, ObservableObject {
         self.session.delegate = self
         self.serviceAdvertiser.delegate = self
         self.serviceBrowser.delegate = self
+        startAdvertising()
+        startBrowsing()
     }
+    
+    
 
     func startAdvertising() {
         self.serviceAdvertiser.startAdvertisingPeer()
@@ -52,13 +56,19 @@ class MPCManager: NSObject, ObservableObject {
 
 extension MPCManager: MCSessionDelegate {
     func session(_ session: MCSession, peer peerID: MCPeerID, didChange state: MCSessionState) {
+        print("Connected state for: \(peerID) --- \(state.rawValue)")
         DispatchQueue.main.async {
             switch state {
             case .connected:
+                print("Connected: \(peerID)")
                 self.connectedPeers.append(peerID)
+                self.stopBrowsing()
+                self.stopAdvertising()
             case .connecting:
+                print("Connecting: \(peerID)")
                 break
             case .notConnected:
+                print("not Connected: \(peerID)")
                 self.connectedPeers.removeAll { $0 == peerID }
             @unknown default:
                 fatalError()
@@ -67,7 +77,9 @@ extension MPCManager: MCSessionDelegate {
     }
 
     func session(_ session: MCSession, didReceive data: Data, fromPeer peerID: MCPeerID) {
+        print("DID receive message from \(peerID)")
         if let message = String(data: data, encoding: .utf8) {
+            print("DID receive message from \(peerID) ----- \(message)")
             DispatchQueue.main.async {
                 ChatViewModel.shared.receiveMessage(message, from: peerID.displayName)
             }
@@ -90,9 +102,11 @@ extension MPCManager: MCSessionDelegate {
 extension MPCManager: MCNearbyServiceAdvertiserDelegate {
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didNotStartAdvertisingPeer error: Error) {
         // Handle error
+        print("ServiceAdvertiser didNotStartAdvertisingPeer: \(String(describing: error))")
     }
 
     func advertiser(_ advertiser: MCNearbyServiceAdvertiser, didReceiveInvitationFromPeer peerID: MCPeerID, withContext context: Data?, invitationHandler: @escaping (Bool, MCSession?) -> Void) {
+        print("didReceiveInvitationFromPeer \(peerID)")
         invitationHandler(true, self.session)
     }
 }
@@ -100,9 +114,11 @@ extension MPCManager: MCNearbyServiceAdvertiserDelegate {
 extension MPCManager: MCNearbyServiceBrowserDelegate {
     func browser(_ browser: MCNearbyServiceBrowser, didNotStartBrowsingForPeers error: Error) {
         // Handle error
+        print("ServiceBrowser didNotStartBrowsingForPeers: \(String(describing: error))")
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, foundPeer peerID: MCPeerID, withDiscoveryInfo info: [String : String]?) {
+        print("ServiceBrowser found peer: \(peerID)")
         DispatchQueue.main.async {
             self.availablePeers.append(peerID)
         }
@@ -110,6 +126,7 @@ extension MPCManager: MCNearbyServiceBrowserDelegate {
     }
 
     func browser(_ browser: MCNearbyServiceBrowser, lostPeer peerID: MCPeerID) {
+        print("ServiceBrowser lost peer: \(peerID)")
         DispatchQueue.main.async {
             self.availablePeers.removeAll { $0 == peerID }
         }

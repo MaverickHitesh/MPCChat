@@ -15,19 +15,21 @@ class ChatViewModel: ObservableObject {
     @Published var messages: [Message] = []
     @Published var messageText: String = ""
 
-    private var cancellables = Set<AnyCancellable>()
+//    private var cancellables = Set<AnyCancellable>()
     private let context = PersistenceController.shared.container.viewContext
 
     init() {
-        MPCManager.shared.startBrowsing()
-        MPCManager.shared.startAdvertising()
         loadMessages()
     }
 
     func sendMessage() {
         let message = messageText
         if let data = message.data(using: .utf8) {
-            try? MPCManager.shared.session.send(data, toPeers: MPCManager.shared.session.connectedPeers, with: .reliable)
+            do {
+                try MPCManager.shared.session.send(data, toPeers: MPCManager.shared.session.connectedPeers, with: .reliable)
+            } catch {
+                print("Error: Unable to send message")
+            }
             saveMessage(content: message, sender: "Me")
             messageText = ""
         }
@@ -54,7 +56,7 @@ class ChatViewModel: ObservableObject {
     private func loadMessages() {
         let request: NSFetchRequest<Message> = Message.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: true)]
-
+        print(Thread.isMainThread)
         do {
             messages = try context.fetch(request)
         } catch {
